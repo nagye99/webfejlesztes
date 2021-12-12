@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+	<ui:define name="content">
+		<h:form id="musicForm">
+			<p:panel header="Music List" id="musicInfoPnl">
+				<h:panelGrid columns="2">
+					<p:outputLabel for="title" value="Dal címe: "/>
+					<p:inputText id="title" size="40"
+								 value="#{musicController.musicDto.title}" required="true"
+								 requiredMessage="Adja meg a dal címét!"/>
+					<p:outputLabel for="artist" value="Artist's name: "/>
+					<p:inputText id="artist" size="40"
+								 value="#{musicController.musicDto.artist}"
+								 required="true"
+								 requiredMessage="Adja meg a dal előadóját!"/>
+					<p:outputLabel for="category" value="A dal kategóriája: "/>
+					<p:selectOneMenu id="category"
+									 value="#{musicController.musicDto.category}"
+									 style="width:150px">
+						<f:selectItems value="#{musicController.categoryList}"
+									   var="String" itemLabel="#{String}"
+									   itemValue="#{String}"/>
+					</p:selectOneMenu>
+					<p:outputLabel for="length" value="A dal hossza:  "/>
+					<p:inputText id="length"
+								 value="#{musicController.musicDto.length}"/>
+
+					<h:commandButton value="Hozzáad"
+									 action="#{musicController.saveMusicInfo}">
+						<f:ajax execute="musicForm" render="musicList musicInfoPnl"/>
+					</h:commandButton>
+					<h:commandButton value="Frissít"
+									 action="#{musicController.updateMusicInfo}">
+						<f:ajax execute="musicForm" render="musicList musicInfoPnl"/>
+					</h:commandButton>
+				</h:panelGrid>
+			</p:panel>
+			<p:panel header="Music List" id="musicList">
+				<p:dataTable id="table" var="music"
+							 value="#{musicController.musicDtoList}">
+					<p:column>
+						<f:facet name="header">Zene címe</f:facet>
+						<h:outputText value="#{music.title}"/>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Zene előadója</f:facet>
+						<h:outputText value="#{music.artist}"/>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Zene kategóriája</f:facet>
+						<h:outputText value="#{music.category}">
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Zene hossza</f:facet>
+						<h:outputText value="#{music.length}">
+						</h:outputText>
+					</p:column>
+					<p:column id="action">
+						<f:facet name="header">Action</f:facet>
+						<h:commandLink value="Frissítés"
+									   action="#{musicController.editMusic(music)}">
+							<f:ajax execute="action" render="musicForm"/>
+						</h:commandLink>/
+							<h:commandLink value="Törlés"
+										   action="#{musicController.deleteMusic(music)}">
+								<f:ajax execute="action" render="table"/>
+							</h:commandLink>
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
